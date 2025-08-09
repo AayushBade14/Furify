@@ -1,6 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "./Include/Shader/Shader.hpp"
+#include "./Include/Primitives/Primitives.hpp"
+#include "./Include/Memory/Buffer/Buffer.hpp"
+#include "./Include/Memory/VAO/VAO.hpp"
 
 #define WIDTH 1920.0f
 #define HEIGHT 1013.0f
@@ -86,6 +89,26 @@ int main(void){
 
   // ==============================================
 
+  // ============[SHADER SETUP]===================
+  Shader shader("./Assets/Shaders/vert.glsl","./Assets/Shaders/frag.glsl");
+  // =============================================
+
+  // ============[BUFFER SETUP]===================
+  VAO vao();
+  vao.Bind();
+
+  Buffer vbo();
+  vbo.CreateBuffer(GL_ARRAY_BUFFER);
+  vbo.BindBuffer();
+  vbo.AllocateAndFill(cubeVertices.size()*sizeof(float),cubeVertices.data(),GL_STATIC_DRAW);
+  
+  vao.SetAttribPointer(0,3,8,0);
+  vao.SetAttribPointer(1,3,8,3);
+  vao.SetAttribPointer(2,2,8,6);
+
+  vao.Unbind();
+  // =============================================
+
 
   // ============[SETTING CALLBACKS]==============
   glfwSetInputMode(window,GLFW_CURSOR,GLFW_CURSOR_DISABLED);
@@ -114,9 +137,21 @@ int main(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // ----------------------------------------
     
+    // ------------- SETUP --------------------
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::lookAt(cameraPos,cameraPos+cameraFront,cameraUp);
+    glm::mat4 projection = glm::perspective(glm::radians(fov),WIDTH/HEIGHT,0.1f,1000.0f);
+
+    shader.Use();
+    shader.SetValue("model",model);
+    shader.SetValue("view",view);
+    shader.SetValue("projection",projection);
+    // ----------------------------------------
 
     // -------------- Rendering ---------------
-
+    vao.Bind();
+    glDrawArrays(GL_TRIANGLES,0,36);
+    vao.Unbind();
     // ----------------------------------------
     
     // ------------- Swap buffers -------------
