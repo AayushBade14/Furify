@@ -47,3 +47,12 @@ void* Buffer::GetMemoryPointer(GLenum type){
 void Buffer::UnmapMemoryPointer(){
   glUnmapBuffer(target);
 }
+
+void Buffer::SetBindingPoint(unsigned int bp){
+  glBindBufferBase(target,bp,id);
+}
+
+void Buffer::SetSpecificBindingPoint(size_t offset, size_t memsize, unsigned int bp){
+  glBindBufferRange(target,bp,id,offset,memsize);
+}
+

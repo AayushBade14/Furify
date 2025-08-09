@@ -8,6 +8,18 @@ void UnbindSpecificBuffer(GLenum target){
   glBindBuffer(target,0);
 }
 
+void CopyBufferData(GLenum readtarget, GLenum writetarget, size_t readoffset, size_t writeoffset, size_t memsize){
+  glCopyBufferSubData(readtarget,writetarget,readoffset,writeoffset,memsize);
+}
+
+unsigned int GetUblockIndex(unsigned int id, const std::string& name){
+  return glGetUniformBlockIndex(id,name);
+}
+
+void BindUblock(unsigned int id, unsigned int index, unsingned int bp){
+  glUniformBlockBinding(id,index,bp);
+}
+
 class Buffer{
 private:
   unsigned int id;
@@ -34,4 +46,7 @@ public:
 
   void AllocateAndFill(size_t memsize, float* data, GLenum method);
   void AllocateAndFill(size_t memsize, unsigned int* data, GLenum method);
+  
+  void SetBindingPoint(unsigned int bp);
+  void SetSpecificBindingPoint(size_t offset, size_t memsize, unsigned int bp);
 };
