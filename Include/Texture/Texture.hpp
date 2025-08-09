@@ -11,8 +11,6 @@ private:
   
   GLenum type;
   
-  void LoadTexture(const std::string& path);
-  void LoadCubemapTexture(const std::vector<std::string>& paths);
 
 public:
   Texture();
@@ -20,8 +18,7 @@ public:
   
   const unsigned int& GetId() const {return id;}
 
-  void CreateTexture(GLenum type, const std::string& path);
-  void CreateTexture(GLenum type, const std::vector<std::string>& paths);
+  void CreateTexture(GLenum type);
 
   void BindTexture();
   void UnbindTexture();
@@ -35,4 +32,7 @@ public:
 
   void SetSamplerValue(Shader& shader,const std::string& name, int value);
   void AssignTextureUnit(int value);
+  
+  void LoadTexture(const std::string& path, bool mipmap);
+  void LoadCubemapTexture(const std::vector<std::string>& paths);
 };
