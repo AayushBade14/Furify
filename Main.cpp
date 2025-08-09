@@ -122,7 +122,7 @@ int main(void){
   // ===============================================
   
   // =================[RENDER-LOOP]=================
-
+  
   while(!glfwWindowShouldClose(window)){
     // ----Calculating dt and processing inputs----
     float currentFrame = (float)glfwGetTime();
