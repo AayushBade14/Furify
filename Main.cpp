@@ -91,24 +91,67 @@ int main(void){
   // ==============================================
 
   // ============[SHADER SETUP]===================
-  Shader shader("./Assets/Shaders/vert.glsl","./Assets/Shaders/frag.glsl");
+  Shader shader("./Assets/Shaders/BasicShaders/vert.glsl","./Assets/Shaders/BasicShaders/frag.glsl");
+  Shader skyShader("./Assets/Shaders/CubemapShaders/vert.glsl","./Assets/Shaders/CubemapShaders/frag.glsl");
   // =============================================
   
   // ============[TEXTURE SETUP]==================
-  Texture texture;
-  texture.CreateTexture(GL_TEXTURE_2D);
-  texture.BindTexture();
+  Texture maskTexture;
+  maskTexture.CreateTexture(GL_TEXTURE_2D);
+  maskTexture.BindTexture();
 
-  texture.SetWrapS(GL_REPEAT);
-  texture.SetWrapT(GL_REPEAT);
-  texture.SetMinFilter(GL_LINEAR_MIPMAP_LINEAR);
-  texture.SetMagFilter(GL_LINEAR);
+  maskTexture.SetWrapS(GL_REPEAT);
+  maskTexture.SetWrapT(GL_REPEAT);
+  maskTexture.SetMinFilter(GL_LINEAR_MIPMAP_LINEAR);
+  maskTexture.SetMagFilter(GL_LINEAR);
 
-  texture.LoadTexture("./Assets/Textures/wall_diffuse.jpg",true);
+  maskTexture.LoadTexture("./Assets/Textures/fur_mask.jpeg",true);
   
-  texture.UnbindTexture();
+  maskTexture.UnbindTexture();
 
-  texture.SetSamplerValue(shader,"wall_tex",0);
+  maskTexture.SetSamplerValue(shader,"mask_tex",0);
+  
+  Texture furTexture;
+  furTexture.CreateTexture(GL_TEXTURE_2D);
+  furTexture.BindTexture();
+
+  furTexture.SetWrapS(GL_REPEAT);
+  furTexture.SetWrapT(GL_REPEAT);
+  furTexture.SetMinFilter(GL_LINEAR_MIPMAP_LINEAR);
+  furTexture.SetMagFilter(GL_LINEAR);
+
+  furTexture.LoadTexture("./Assets/Textures/fur.jpeg",true);
+  
+  furTexture.UnbindTexture();
+
+  furTexture.SetSamplerValue(shader,"fur_tex",1);
+
+  // ----
+  
+  std::vector<std::string> paths = {
+    "./Assets/Cubemaps/Skybox/right.jpg",
+    "./Assets/Cubemaps/Skybox/left.jpg",
+    "./Assets/Cubemaps/Skybox/top.jpg",
+    "./Assets/Cubemaps/Skybox/bottom.jpg",
+    "./Assets/Cubemaps/Skybox/front.jpg",
+    "./Assets/Cubemaps/Skybox/back.jpg"
+  };
+  
+  Texture skybox;
+  skybox.CreateTexture(GL_TEXTURE_CUBE_MAP);
+  skybox.BindTexture();
+
+  skybox.SetWrapS(GL_CLAMP_TO_EDGE);
+  skybox.SetWrapT(GL_CLAMP_TO_EDGE);
+  skybox.SetWrapR(GL_CLAMP_TO_EDGE);
+  skybox.SetMinFilter(GL_LINEAR);
+  skybox.SetMagFilter(GL_LINEAR);
+
+  skybox.LoadCubemapTexture(paths);
+
+  skybox.UnbindTexture();
+
+  skybox.SetSamplerValue(skyShader,"sky",0);
   // =============================================
 
 
@@ -138,6 +181,9 @@ int main(void){
   
   // ===================[OGL BUFFERS]===============
   glEnable(GL_DEPTH_TEST);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   // ===============================================
   
   // =================[RENDER-LOOP]=================
@@ -161,21 +207,54 @@ int main(void){
     glm::mat4 view = glm::lookAt(cameraPos,cameraPos+cameraFront,cameraUp);
     glm::mat4 projection = glm::perspective(glm::radians(fov),WIDTH/HEIGHT,0.1f,1000.0f);
     
-    texture.AssignTextureUnit(0);
-    texture.BindTexture();
+    static int totalLayers = 20;
+    static float furLength = 0.2f;
+
+    // ----------------------------------------
+
+    // -------------- Rendering ---------------
+    maskTexture.AssignTextureUnit(0);
+    maskTexture.BindTexture();
+    
+    furTexture.AssignTextureUnit(1);
+    furTexture.BindTexture();
 
     shader.Use();
     shader.SetValue("model",model);
     shader.SetValue("view",view);
     shader.SetValue("projection",projection);
-    // ----------------------------------------
+    shader.SetValue("furLength",furLength);
+    shader.SetValue("totalLayers",totalLayers);
 
-    // -------------- Rendering ---------------
+    for(int i = 0; i < totalLayers; i++){  
+      shader.SetValue("layer",i);
+
+      vao.Bind();
+      glDrawArrays(GL_TRIANGLES,0,36);
+      vao.Unbind();
+    }
+    maskTexture.UnbindTexture();
+    furTexture.UnbindTexture();
+
+    glDepthFunc(GL_LEQUAL);
+
+    skybox.AssignTextureUnit(0);
+    skybox.BindTexture();
+    
+    view = glm::mat4(glm::mat3(view));
+
+    skyShader.Use();
+    skyShader.SetValue("model",model);
+    skyShader.SetValue("view",view);
+    skyShader.SetValue("projection",projection);
+
     vao.Bind();
     glDrawArrays(GL_TRIANGLES,0,36);
     vao.Unbind();
+
+    skybox.UnbindTexture();
     
-    texture.UnbindTexture();
+    glDepthFunc(GL_LESS);
     // ----------------------------------------
     
     // ------------- Swap buffers -------------
