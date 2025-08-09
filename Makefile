@@ -12,7 +12,8 @@ OBJS = ./Main.o \
 			 ./Include/Memory/Buffer/Buffer.o \
 			 ./Include/Memory/VAO/VAO.o \
 			 ./Include/ThirdParty/STB/stb_image.o \
-			 ./Include/ThirdParty/glad/glad.o
+			 ./Include/ThirdParty/glad/glad.o \
+			 ./Include/Primitives/Primitives.o
 
 TARGET = $(BUILD)/furify
 

@@ -32,7 +32,7 @@ void Buffer::PartialFill(size_t offset, size_t memsize, unsigned int* data){
   glBufferSubData(target,offset,memsize,data);
 }
 
-void Buffer::AllocateAndFill(size_t memsize, float* data, GLenum method){
+void Buffer::AllocateAndFill(size_t memsize, const float* data, GLenum method){
   glBufferData(target,memsize,data,method);
 }
 
@@ -48,11 +48,11 @@ void Buffer::UnmapMemoryPointer(){
   glUnmapBuffer(target);
 }
 
-void Buffer::SetBindingPoint(unsigned int bp){
+void Buffer::SetBindingPoint(unsigned int id, unsigned int bp){
   glBindBufferBase(target,bp,id);
 }
 
-void Buffer::SetSpecificBindingPoint(size_t offset, size_t memsize, unsigned int bp){
+void Buffer::SetSpecificBindingPoint(unsigned int id, size_t offset, size_t memsize, unsigned int bp){
   glBindBufferRange(target,bp,id,offset,memsize);
 }
 

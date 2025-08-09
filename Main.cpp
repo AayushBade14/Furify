@@ -80,7 +80,7 @@ int main(void){
 
   glfwMakeContextCurrent(window);
 
-  if(!gladGLLoader((GLADloadproc)glfwGetProcAddress)){
+  if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
     glfwDestroyWindow(window);
     glfwTerminate();
     std::cerr<<"ERROR: GLAD_INIT!"<<std::endl;
@@ -94,10 +94,10 @@ int main(void){
   // =============================================
 
   // ============[BUFFER SETUP]===================
-  VAO vao();
+  VAO vao;
   vao.Bind();
 
-  Buffer vbo();
+  Buffer vbo;
   vbo.CreateBuffer(GL_ARRAY_BUFFER);
   vbo.BindBuffer();
   vbo.AllocateAndFill(cubeVertices.size()*sizeof(float),cubeVertices.data(),GL_STATIC_DRAW);

@@ -4,19 +4,19 @@
 #include <iostream>
 #include <vector>
 
-void UnbindSpecificBuffer(GLenum target){
+inline void UnbindSpecificBuffer(GLenum target){
   glBindBuffer(target,0);
 }
 
-void CopyBufferData(GLenum readtarget, GLenum writetarget, size_t readoffset, size_t writeoffset, size_t memsize){
+inline void CopyBufferData(GLenum readtarget, GLenum writetarget, size_t readoffset, size_t writeoffset, size_t memsize){
   glCopyBufferSubData(readtarget,writetarget,readoffset,writeoffset,memsize);
 }
 
-unsigned int GetUblockIndex(unsigned int id, const std::string& name){
-  return glGetUniformBlockIndex(id,name);
+inline unsigned int GetUblockIndex(unsigned int id, const std::string& name){
+  return glGetUniformBlockIndex(id,name.c_str());
 }
 
-void BindUblock(unsigned int id, unsigned int index, unsingned int bp){
+inline void BindUblock(unsigned int id, unsigned int index, unsigned int bp){
   glUniformBlockBinding(id,index,bp);
 }
 
@@ -44,9 +44,9 @@ public:
   void PartialFill(size_t offset, size_t memsize, float* data);
   void PartialFill(size_t offset, size_t memsize, unsigned int* data);
 
-  void AllocateAndFill(size_t memsize, float* data, GLenum method);
+  void AllocateAndFill(size_t memsize, const float* data, GLenum method);
   void AllocateAndFill(size_t memsize, unsigned int* data, GLenum method);
   
-  void SetBindingPoint(unsigned int bp);
-  void SetSpecificBindingPoint(size_t offset, size_t memsize, unsigned int bp);
+  void SetBindingPoint(unsigned int id, unsigned int bp);
+  void SetSpecificBindingPoint(unsigned int id, size_t offset, size_t memsize, unsigned int bp);
 };

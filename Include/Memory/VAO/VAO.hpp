@@ -18,7 +18,7 @@ public:
   void Unbind();
   
   void SetAttribPointer(int loc, int nr, int stride, int start);
-  void SetAttribPointer(int loc, int nr, GLenum type, GLBoolean isnormalized, int stride, int start);
+  void SetAttribPointer(int loc, int nr, GLenum type, GLboolean isnormalized, size_t stride, size_t start);
 
   void SetAttribIPointer(int loc, int nr, int stride, int start);
 };

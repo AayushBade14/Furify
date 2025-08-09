@@ -21,7 +21,7 @@ void VAO::SetAttribPointer(int loc, int nr, int stride, int start){
   glVertexAttribPointer(loc,nr,GL_FLOAT,GL_FALSE,stride*sizeof(float),(void*)(start*sizeof(float)));
 }
 
-void VAO::SetAttribPointer(int loc, int nr, GLenum type, GLBoolean isnormalized, size_t stride, size_t start){
+void VAO::SetAttribPointer(int loc, int nr, GLenum type, GLboolean isnormalized, size_t stride, size_t start){
   glEnableVertexAttribArray(loc);
   glVertexAttribPointer(loc,nr,type,isnormalized,stride,(void*)start);
 }

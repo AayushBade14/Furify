@@ -17,7 +17,7 @@ Shader::Shader(const std::string& vertPath, const std::string& geomPath, const s
 
   unsigned int vert = CompileShader(vertCode,ShaderType::VERT);
   unsigned int geom = CompileShader(geomCode,ShaderType::GEOM);
-  unsigned int frag = CompileShader(fragCodem,ShaderType::FRAG);
+  unsigned int frag = CompileShader(fragCode,ShaderType::FRAG);
 
   CreateShaderProgram(vert,geom,frag);
 }
