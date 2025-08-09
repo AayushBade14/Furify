@@ -4,6 +4,8 @@ out vec4 fragColor;
 
 in vec2 TexCoord;
 
+uniform sampler2D wall_tex;
+
 void main(){
-  fragColor = vec4(1.0);
+  fragColor = texture(wall_tex,TexCoord);
 }

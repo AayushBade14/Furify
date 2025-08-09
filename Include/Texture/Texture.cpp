@@ -8,11 +8,7 @@ Texture::~Texture(){
   glDeleteTextures(1,&id);
 }
 
-void Texture::CreateTexture(GLenum type, const std::string& path){
-  this->type = type;
-}
-
-void Texture::CreateTexture(GLenum type, const std::vector<std::string>& paths){
+void Texture::CreateTexture(GLenum type){
   this->type = type;
 }
 
@@ -86,7 +82,7 @@ void Texture::LoadCubemapTexture(const std::vector<std::string>& paths){
     data = stbi_load(paths[i].c_str(),&width,&height,&nrChannels,0);
     GLenum flag = (nrChannels == 3)? GL_RGB : GL_RGBA;
     if(data){
-      glTexImage2D(GL_CUBE_MAP_POSITIVE_X + i, 0, flag, width, height, 0, flag, GL_UNSIGNED_BYTE, data);
+      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, flag, width, height, 0, flag, GL_UNSIGNED_BYTE, data);
     }
     else{
       std::cout<<"ERROR: Loading cubemap texture: "<<paths[i]<<std::endl;

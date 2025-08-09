@@ -3,7 +3,9 @@
 #include <glad/glad.h>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "../ThirdParty/STB/stb_image.h"
+#include "../Shader/Shader.hpp"
 
 class Texture{
 private:

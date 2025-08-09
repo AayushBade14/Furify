@@ -4,6 +4,7 @@
 #include "./Include/Primitives/Primitives.hpp"
 #include "./Include/Memory/Buffer/Buffer.hpp"
 #include "./Include/Memory/VAO/VAO.hpp"
+#include "./Include/Texture/Texture.hpp"
 
 #define WIDTH 1920.0f
 #define HEIGHT 1013.0f
@@ -92,6 +93,24 @@ int main(void){
   // ============[SHADER SETUP]===================
   Shader shader("./Assets/Shaders/vert.glsl","./Assets/Shaders/frag.glsl");
   // =============================================
+  
+  // ============[TEXTURE SETUP]==================
+  Texture texture;
+  texture.CreateTexture(GL_TEXTURE_2D);
+  texture.BindTexture();
+
+  texture.SetWrapS(GL_REPEAT);
+  texture.SetWrapT(GL_REPEAT);
+  texture.SetMinFilter(GL_LINEAR_MIPMAP_LINEAR);
+  texture.SetMagFilter(GL_LINEAR);
+
+  texture.LoadTexture("./Assets/Textures/wall_diffuse.jpg",true);
+  
+  texture.UnbindTexture();
+
+  texture.SetSamplerValue(shader,"wall_tex",0);
+  // =============================================
+
 
   // ============[BUFFER SETUP]===================
   VAO vao;
@@ -141,6 +160,9 @@ int main(void){
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::lookAt(cameraPos,cameraPos+cameraFront,cameraUp);
     glm::mat4 projection = glm::perspective(glm::radians(fov),WIDTH/HEIGHT,0.1f,1000.0f);
+    
+    texture.AssignTextureUnit(0);
+    texture.BindTexture();
 
     shader.Use();
     shader.SetValue("model",model);
@@ -152,6 +174,8 @@ int main(void){
     vao.Bind();
     glDrawArrays(GL_TRIANGLES,0,36);
     vao.Unbind();
+    
+    texture.UnbindTexture();
     // ----------------------------------------
     
     // ------------- Swap buffers -------------
