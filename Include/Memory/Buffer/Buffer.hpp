@@ -4,6 +4,10 @@
 #include <iostream>
 #include <vector>
 
+void UnbindSpecificBuffer(GLenum target){
+  glBindBuffer(target,0);
+}
+
 class Buffer{
 private:
   unsigned int id;
@@ -24,10 +28,10 @@ public:
   void BindBuffer();
   void UnbindBuffer();
   
-  void AllocateMemory(size_t memsize);
+  void AllocateMemory(size_t memsize, GLenum method);
   void PartialFill(size_t offset, size_t memsize, float* data);
   void PartialFill(size_t offset, size_t memsize, unsigned int* data);
 
-  void AllocateAndFill(size_t memsize, float* data);
-  void AllocateAndFill(size_t memsize, unsigned int* data);
+  void AllocateAndFill(size_t memsize, float* data, GLenum method);
+  void AllocateAndFill(size_t memsize, unsigned int* data, GLenum method);
 };
